@@ -1,0 +1,244 @@
+.kiosko-body {
+  min-height: 100vh;
+  background: radial-gradient(circle at 50% -10%, #14171d 0%, var(--bg-0) 60%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.kiosko-staff-link {
+  position: fixed;
+  top: var(--sp-4);
+  right: var(--sp-4);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  padding: 8px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-pill);
+  opacity: 0.5;
+  transition: opacity var(--dur-fast) var(--ease);
+  z-index: 10;
+}
+
+.kiosko-staff-link:hover {
+  opacity: 1;
+}
+
+.kiosko-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-6);
+  width: 100%;
+  max-width: 480px;
+}
+
+.kiosko-logo {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+}
+
+.kiosko-instructions {
+  text-align: center;
+  color: var(--text-1);
+  font-size: 1.15rem;
+  max-width: 380px;
+}
+
+.kiosko-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-5);
+}
+
+.kiosko-input {
+  width: 100%;
+  background: var(--bg-1);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  color: var(--text-0);
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-align: center;
+  padding: var(--sp-4);
+  caret-color: var(--accent-blue);
+}
+
+.kiosko-input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 4px rgba(35, 174, 240, 0.18);
+}
+
+.kiosko-input::placeholder {
+  color: var(--text-muted);
+  letter-spacing: 0.3em;
+}
+
+.kiosko-numpad {
+  width: 100%;
+  gap: var(--sp-3);
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.kiosko-numpad button {
+  padding: var(--sp-5) 0;
+  font-size: 1.2rem;
+}
+
+.kiosko-numpad button.numpad-enter {
+  background: var(--accent-blue);
+  color: #041520;
+  border-color: transparent;
+}
+
+.kiosko-numpad button.numpad-enter:hover {
+  background: #3cc0ff;
+}
+
+/* ---------- Resultado (modal) ---------- */
+
+.kiosko-result {
+  max-width: 420px;
+  text-align: center;
+  padding: var(--sp-6) var(--sp-6) var(--sp-5);
+  border-width: 2px;
+  cursor: pointer;
+}
+
+.kiosko-result .avatar-lg {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto var(--sp-4);
+}
+
+.kiosko-result__icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto var(--sp-3);
+}
+
+.kiosko-result__estado {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: var(--sp-2);
+}
+
+.kiosko-result__nombre {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: var(--sp-1);
+}
+
+.kiosko-result__plan {
+  color: var(--text-2);
+  font-size: 0.88rem;
+  margin-bottom: var(--sp-4);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.kiosko-result__detalle {
+  font-size: 1rem;
+  color: var(--text-1);
+  line-height: 1.5;
+}
+
+.kiosko-result__dias {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-5);
+  margin: var(--sp-4) 0;
+}
+
+.kiosko-result__dias-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.kiosko-result__dias-value {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.kiosko-result__dias-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-2);
+}
+
+.kiosko-result__hint {
+  margin-top: var(--sp-4);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.kiosko-result--exito {
+  border-color: var(--ok);
+  background: linear-gradient(180deg, rgba(34, 197, 94, 0.1), var(--bg-1) 40%);
+}
+.kiosko-result--exito .kiosko-result__estado,
+.kiosko-result--exito .kiosko-result__dias-value {
+  color: var(--ok);
+}
+
+.kiosko-result--vencido {
+  border-color: var(--danger);
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.1), var(--bg-1) 40%);
+}
+.kiosko-result--vencido .kiosko-result__estado {
+  color: var(--danger);
+}
+
+.kiosko-result--sin_dias {
+  border-color: var(--warn);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.1), var(--bg-1) 40%);
+}
+.kiosko-result--sin_dias .kiosko-result__estado,
+.kiosko-result--sin_dias .kiosko-result__dias-value {
+  color: var(--warn);
+}
+
+.kiosko-result--no_encontrado {
+  border-color: var(--border-strong);
+}
+.kiosko-result--no_encontrado .kiosko-result__estado {
+  color: var(--text-1);
+}
+
+@media (max-width: 480px) {
+  .kiosko-main {
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+  }
+  .kiosko-logo {
+    max-width: 260px;
+  }
+  .kiosko-instructions {
+    font-size: 1rem;
+  }
+  .kiosko-input {
+    font-size: 2rem;
+    padding: var(--sp-3);
+  }
+  .kiosko-numpad {
+    gap: var(--sp-2);
+  }
+  .kiosko-numpad button {
+    padding: var(--sp-3) 0;
+    font-size: 1.6rem;
+  }
+}

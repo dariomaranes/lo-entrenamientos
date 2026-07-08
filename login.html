@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ingreso Staff — Centro de Entrenamiento Lo.</title>
+<link rel="icon" href="assets/favicon.png" />
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/login.css" />
+</head>
+<body class="login-body">
+  <div class="login-card card">
+    <img class="login-logo" src="assets/logo.png" alt="Centro de Entrenamiento Lo." />
+
+    <form id="loginForm" class="stack" autocomplete="off">
+      <div class="field">
+        <label for="username">Usuario</label>
+        <input class="input" id="username" name="username" type="text" placeholder="admin / secretaria" autocomplete="username" />
+      </div>
+      <div class="field">
+        <label for="password">Contraseña</label>
+        <input class="input" id="password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <div id="loginError" class="field-error" style="display: none;"></div>
+      <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+    </form>
+
+    <div class="login-hint">
+      <strong>Credenciales de la demo:</strong>
+      <span>Admin: <code>admin / admin</code></span>
+      <span>Secretaría: <code>secretaria / secretaria</code></span>
+    </div>
+
+    <a class="login-back" href="kiosko.html">&larr; Volver a pantalla cliente</a>
+  </div>
+
+  <script src="js/core/storage.js"></script>
+  <script src="js/core/utils.js"></script>
+  <script src="js/core/auth.js"></script>
+  <script src="js/pages/login.js"></script>
+</body>
+</html>

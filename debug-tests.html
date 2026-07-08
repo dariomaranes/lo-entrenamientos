@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Debug Tests — fees.js</title>
+<meta name="robots" content="noindex" />
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/components.css" />
+<style>
+  body { padding: var(--sp-6); }
+  .container { max-width: 900px; margin: 0 auto; }
+  table.results { width: 100%; border-collapse: collapse; margin-top: var(--sp-5); }
+  table.results th, table.results td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); font-size: 0.86rem; }
+  .pass { color: var(--ok); font-weight: 700; }
+  .fail { color: var(--danger); font-weight: 700; }
+  .summary { margin-top: var(--sp-5); font-family: var(--font-display); font-size: 1.4rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Debug Tests — algoritmo de facturación (fees.js)</h1>
+  <p class="text-muted">Página no enlazada desde la navegación. Corre escenarios de negocio contra <code>fees.js</code> sin framework de tests.</p>
+  <button class="btn btn-primary" id="runBtn" style="margin-top: 16px;">Correr tests</button>
+  <div id="summary" class="summary"></div>
+  <table class="results" id="resultsTable">
+    <thead><tr><th>#</th><th>Escenario</th><th>Resultado</th><th>Detalle</th></tr></thead>
+    <tbody id="resultsBody"></tbody>
+  </table>
+</div>
+
+<script src="js/core/storage.js"></script>
+<script src="js/core/utils.js"></script>
+<script src="js/core/fees.js"></script>
+<script src="js/core/seed.js"></script>
+<script src="js/core/data.js"></script>
+<script>
+(function () {
+  const { dateAtDay, formatISODate, parseISODate, diffInDays } = window.Utils;
+  const Fees = window.Fees;
+
+  const rows = [];
+  function check(name, condition, detail) {
+    rows.push({ name, pass: !!condition, detail: detail || '' });
+  }
+
+  function runTests() {
+    rows.length = 0;
+
+    // 1. Hoy = exactamente el 10
+    let p = Fees.periodoVigente(dateAtDay(2025, 5, 10)); // junio (mes 5, 0-based) dia 10
+    check(
+      '1. Hoy = día 10 (2025-06-10)',
+      p.inicioISO === '2025-06-10' && p.finISO === '2025-07-09',
+      `inicio=${p.inicioISO} fin=${p.finISO}`
+    );
+
+    // 2. Hoy = 9
+    p = Fees.periodoVigente(dateAtDay(2025, 5, 9));
+    check(
+      '2. Hoy = día 9 (2025-06-09)',
+      p.inicioISO === '2025-05-10' && p.finISO === '2025-06-09',
+      `inicio=${p.inicioISO} fin=${p.finISO}`
+    );
+
+    // 3. Hoy = 11
+    p = Fees.periodoVigente(dateAtDay(2025, 5, 11));
+    check(
+      '3. Hoy = día 11 (2025-06-11), mismo período que el día 10',
+      p.inicioISO === '2025-06-10' && p.finISO === '2025-07-09',
+      `inicio=${p.inicioISO} fin=${p.finISO}`
+    );
+
+    // 4. Frontera mes corto (feb no bisiesto 2025)
+    p = Fees.periodoVigente(dateAtDay(2025, 2, 9)); // marzo dia 9
+    check(
+      '4. Frontera feb no bisiesto: hoy 2025-03-09',
+      p.inicioISO === '2025-02-10' && p.finISO === '2025-03-09',
+      `inicio=${p.inicioISO} fin=${p.finISO}`
+    );
+
+    // 5. Frontera bisiesto 2024
+    p = Fees.periodoVigente(dateAtDay(2024, 2, 9)); // marzo dia 9, 2024 es bisiesto
+    check(
+      '5. Frontera feb bisiesto: hoy 2024-03-09 (incluye 29/02)',
+      p.inicioISO === '2024-02-10' && p.finISO === '2024-03-09',
+      `inicio=${p.inicioISO} fin=${p.finISO}`
+    );
+
+    // 6. Mes de 31 dias
+    p = Fees.periodoVigente(dateAtDay(2025, 7, 5)); // agosto dia 5 -> periodo anterior (julio 10 a agosto 9)
+    check(
+      '6. Mes de 31 días: hoy 2025-08-05 -> período 2025-07-10 a 2025-08-09',
+      p.inicioISO === '2025-07-10' && p.finISO === '2025-08-09',
+      `inicio=${p.inicioISO} fin=${p.finISO}`
+    );
+
+    // 7. Pago adelantado (antes del 10)
+    let pp = Fees.periodoParaPago(dateAtDay(2025, 5, 5)); // 5 de junio
+    check(
+      '7. Pago adelantado (05/06) activa período que arranca el mismo mes',
+      pp.inicioISO === '2025-06-10',
+      `inicio=${pp.inicioISO}`
+    );
+
+    // 8. Pago atrasado / catch-up (despues del 10)
+    pp = Fees.periodoParaPago(dateAtDay(2025, 5, 15)); // 15 de junio
+    check(
+      '8. Pago atrasado (15/06) activa el período ya iniciado el mismo mes',
+      pp.inicioISO === '2025-06-10',
+      `inicio=${pp.inicioISO}`
+    );
+
+    // 9. Período salteado, sin cobertura retroactiva
+    {
+      const pagos = [
+        { clienteId: 'x1', periodoInicio: '2025-06-10', periodoFin: '2025-07-09' },
+        { clienteId: 'x1', periodoInicio: '2025-08-10', periodoFin: '2025-09-09' },
+      ];
+      const hoy = dateAtDay(2025, 6, 15); // 15 de julio: el período de julio (10/07-09/08) no fue pagado
+      const alDia = Fees.estaAlDia(pagos, 'x1', hoy);
+      check(
+        '9. Período salteado (julio) no se cubre retroactivamente con el pago de agosto',
+        alDia === false,
+        `estaAlDia=${alDia}`
+      );
+    }
+
+    // 10. Tope de días exacto
+    {
+      const cliente = { id: 'x2', plan: 'base' };
+      const periodo = Fees.periodoVigente(dateAtDay(2025, 5, 20));
+      const pagos = [{ clienteId: 'x2', periodoInicio: periodo.inicioISO, periodoFin: periodo.finISO }];
+      const asistencias = Array.from({ length: 8 }, (_, i) => ({
+        clienteId: 'x2',
+        fecha: formatISODate(dateAtDay(2025, 5, 10 + i)),
+        hora: '18:00',
+      }));
+      const ev = Fees.evaluarCliente(cliente, pagos, asistencias, dateAtDay(2025, 5, 20));
+      check(
+        '10. Tope de días (base=8): 8 asistencias ya registradas -> sin_dias, disponibles=0',
+        ev.estado === 'sin_dias' && ev.disponibles === 0 && ev.usados === 8,
+        `estado=${ev.estado} usados=${ev.usados} disponibles=${ev.disponibles}`
+      );
+    }
+
+    // 11. Conteo de asistencias no duplica un check-in ya registrado el mismo día
+    {
+      const cliente = { id: 'x3', plan: 'premium' };
+      const periodo = Fees.periodoVigente(dateAtDay(2025, 5, 12));
+      const pagos = [{ clienteId: 'x3', periodoInicio: periodo.inicioISO, periodoFin: periodo.finISO }];
+      const asistencias = [{ clienteId: 'x3', fecha: '2025-06-12', hora: '09:00' }];
+      const usadosAntes = Fees.diasAsistidosEnPeriodo(asistencias, 'x3', periodo);
+      const usadosDespues = Fees.diasAsistidosEnPeriodo(asistencias, 'x3', periodo); // sin agregar nada, debe dar igual
+      check(
+        '11. diasAsistidosEnPeriodo es estable ante llamadas repetidas (la deduplicación real la hace kiosko.js antes de addAsistencia)',
+        usadosAntes === 1 && usadosDespues === 1,
+        `usadosAntes=${usadosAntes} usadosDespues=${usadosDespues}`
+      );
+    }
+
+    // 12. DNI inexistente no rompe
+    {
+      window.Data.seedIfNeeded();
+      let threw = false;
+      let resultado;
+      try {
+        resultado = window.Data.getClienteByDni('00000000');
+      } catch (e) {
+        threw = true;
+      }
+      check('12. DNI inexistente -> null, sin excepción', !threw && resultado === null, `resultado=${resultado}`);
+    }
+
+    render();
+  }
+
+  function render() {
+    const tbody = document.getElementById('resultsBody');
+    tbody.innerHTML = rows
+      .map(
+        (r, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${r.name}</td>
+        <td class="${r.pass ? 'pass' : 'fail'}">${r.pass ? 'PASS' : 'FAIL'}</td>
+        <td class="text-muted">${r.detail}</td>
+      </tr>`
+      )
+      .join('');
+
+    const passed = rows.filter((r) => r.pass).length;
+    const summary = document.getElementById('summary');
+    summary.textContent = `${passed} / ${rows.length} tests OK`;
+    summary.style.color = passed === rows.length ? 'var(--ok)' : 'var(--danger)';
+
+    rows.forEach((r) => console.assert(r.pass, r.name, r.detail));
+  }
+
+  document.getElementById('runBtn').addEventListener('click', runTests);
+})();
+</script>
+</body>
+</html>

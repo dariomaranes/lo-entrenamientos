@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Centro de Entrenamiento Lo. — Ingreso</title>
+<link rel="icon" href="assets/favicon.png" />
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/kiosko.css" />
+</head>
+<body class="kiosko-body">
+  <a class="kiosko-staff-link" href="login.html">Ingreso Staff</a>
+
+  <main class="kiosko-main">
+    <img class="kiosko-logo" src="assets/logo.png" alt="Centro de Entrenamiento Lo. — Entrena diferente" />
+
+    <p class="kiosko-instructions">Ingresá tu número de documento para registrar tu ingreso</p>
+
+    <form id="dniForm" class="kiosko-form" autocomplete="off">
+      <input
+        id="dniInput"
+        class="kiosko-input"
+        type="text"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        maxlength="8"
+        placeholder="D N I"
+        aria-label="Número de documento"
+      />
+
+      <div class="numpad kiosko-numpad" id="numpad">
+        <button type="button" class="numpad-clear" id="numpadClear">Borrar</button>
+        <button type="submit" class="numpad-enter" id="numpadEnter">Ingresar</button>
+      </div>
+    </form>
+  </main>
+
+  <div class="modal-overlay" id="resultOverlay">
+    <div class="modal kiosko-result" id="resultModal" role="status" aria-live="assertive"></div>
+  </div>
+
+  <script src="js/core/storage.js"></script>
+  <script src="js/core/utils.js"></script>
+  <script src="js/core/fees.js"></script>
+  <script src="js/core/seed.js"></script>
+  <script src="js/core/data.js"></script>
+  <script src="js/pages/kiosko.js"></script>
+</body>
+</html>

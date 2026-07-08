@@ -1,0 +1,82 @@
+.kpi-grid--dashboard {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 900px) {
+  .kpi-grid--dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-5);
+}
+
+.admin-grid--comparisons {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 900px) {
+  .admin-grid,
+  .admin-grid--comparisons {
+    grid-template-columns: 1fr;
+  }
+}
+
+.comparison-pair {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-3) 0;
+}
+
+.comparison-pair + .comparison-pair {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.comparison-pair__block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.comparison-pair__label {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-2);
+}
+
+.comparison-pair__value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.comparison-pair__delta {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.comparison-pair__delta.is-up {
+  color: var(--ok);
+}
+
+.comparison-pair__delta.is-down {
+  color: var(--danger);
+}
+
+.notif-content-cell {
+  max-width: 380px;
+  color: var(--text-1);
+}
+
+[data-filtro].is-active {
+  background: var(--accent-blue);
+  color: #041520;
+  border-color: transparent;
+}

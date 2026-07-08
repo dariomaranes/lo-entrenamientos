@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin — Centro de Entrenamiento Lo.</title>
+<link rel="icon" href="assets/favicon.png" />
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-header__brand">
+      <img src="assets/logo.png" alt="Centro de Entrenamiento Lo." />
+      <span class="app-header__title">Admin</span>
+    </div>
+    <div class="app-header__actions">
+      <span class="app-header__user">Hola, <strong id="userName"></strong></span>
+      <a class="btn btn-ghost btn-sm" id="secretariaLink" href="secretaria.html">Secretaría</a>
+      <button class="btn btn-subtle btn-sm" id="resetBtn" type="button">Reiniciar datos demo</button>
+      <button class="btn btn-ghost btn-sm" id="logoutBtn" type="button">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <div class="tabs">
+      <button class="tab-btn is-active" data-tab="dashboard" type="button">Dashboard</button>
+      <button class="tab-btn" data-tab="notificaciones" type="button">Notificaciones</button>
+      <button class="tab-btn" data-tab="pagos" type="button">Historial de Pagos</button>
+    </div>
+
+    <!-- Tab: Dashboard -->
+    <section class="tab-panel is-active" id="tab-dashboard">
+      <div class="kpi-grid kpi-grid--dashboard" id="kpiGrid"></div>
+
+      <div class="admin-grid">
+        <div class="card">
+          <h2 class="card-title">Ingresos por mes (últimos 12 meses)</h2>
+          <canvas id="chartIngresos" height="220"></canvas>
+        </div>
+        <div class="card">
+          <h2 class="card-title">Asistencias por mes (últimos 12 meses)</h2>
+          <canvas id="chartAsistencias" height="220"></canvas>
+        </div>
+        <div class="card">
+          <h2 class="card-title">Distribución de planes</h2>
+          <canvas id="chartPlanes" height="220"></canvas>
+        </div>
+        <div class="card">
+          <h2 class="card-title">Horarios pico de asistencia</h2>
+          <canvas id="chartHorarios" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="admin-grid admin-grid--comparisons">
+        <div class="card">
+          <h2 class="card-title">Comparación por semestre</h2>
+          <div id="comparacionSemestre"></div>
+        </div>
+        <div class="card">
+          <h2 class="card-title">Comparación por cuatrimestre</h2>
+          <div id="comparacionCuatrimestre"></div>
+        </div>
+        <div class="card">
+          <h2 class="card-title">Estacionalidad: verano vs. invierno</h2>
+          <div id="comparacionEstacional"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab: Notificaciones -->
+    <section class="tab-panel" id="tab-notificaciones">
+      <div class="row-between" style="margin-bottom: var(--sp-4);">
+        <h2 class="card-title" style="margin: 0;">Centro de notificaciones (simulado)</h2>
+        <div class="row">
+          <button class="btn btn-subtle btn-sm is-active" data-filtro="todos" type="button">Todos</button>
+          <button class="btn btn-subtle btn-sm" data-filtro="whatsapp" type="button">WhatsApp</button>
+          <button class="btn btn-subtle btn-sm" data-filtro="email" type="button">Email</button>
+        </div>
+      </div>
+      <p class="text-muted" style="margin-bottom: var(--sp-4);">
+        Prototipo sin integración real: acá se simula qué mensajes se hubieran enviado (avisos de vencimiento por WhatsApp, confirmaciones de pago por email).
+      </p>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Tipo</th>
+              <th>Destinatario</th>
+              <th>Motivo</th>
+              <th>Mensaje</th>
+            </tr>
+          </thead>
+          <tbody id="notifTableBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="notifPagination"></div>
+    </section>
+
+    <!-- Tab: Historial de Pagos -->
+    <section class="tab-panel" id="tab-pagos">
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>DNI</th>
+              <th>Fecha de pago</th>
+              <th>Período habilitado</th>
+              <th>Plan</th>
+              <th>Monto</th>
+              <th>Registrado por</th>
+            </tr>
+          </thead>
+          <tbody id="pagosTableBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="pagosPagination"></div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="js/core/storage.js"></script>
+  <script src="js/core/utils.js"></script>
+  <script src="js/core/fees.js"></script>
+  <script src="js/core/seed.js"></script>
+  <script src="js/core/data.js"></script>
+  <script src="js/core/notifications.js"></script>
+  <script src="js/core/auth.js"></script>
+  <script src="js/core/ui.js"></script>
+  <script src="js/pages/admin.js"></script>
+</body>
+</html>
