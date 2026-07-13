@@ -229,6 +229,18 @@ select.input {
   background-position: right 14px center;
 }
 
+/* iOS Safari renders the value of input[type=date] as its own centered,
+   larger sub-element that ignores our font-size/text-align — this pulls it
+   back in line with the rest of the form fields. */
+input.input[type='date'] {
+  min-height: 44px;
+}
+
+input.input[type='date']::-webkit-date-and-time-value {
+  text-align: left;
+  font-size: 1rem;
+}
+
 .input::placeholder {
   color: var(--text-muted);
 }
