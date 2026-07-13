@@ -229,16 +229,38 @@ select.input {
   background-position: right 14px center;
 }
 
-/* iOS Safari renders the value of input[type=date] as its own centered,
-   larger sub-element that ignores our font-size/text-align — this pulls it
-   back in line with the rest of the form fields. */
-input.input[type='date'] {
-  min-height: 44px;
+/* Native input[type=date] text rendering is inconsistent across engines
+   (WebKit/iOS in particular renders it centered and oversized, ignoring
+   font-size/text-align). Instead of fighting each engine's internals, the
+   native text is made invisible and a fully custom-styled label is
+   overlaid on top — see .date-field below. The native control (and its
+   calendar picker) stays functional underneath. */
+.date-field {
+  position: relative;
 }
 
-input.input[type='date']::-webkit-date-and-time-value {
-  text-align: left;
+.date-field .input[type='date'] {
+  color: transparent;
+}
+
+.date-field .input[type='date']::-webkit-datetime-edit,
+.date-field .input[type='date']::-webkit-datetime-edit-fields-wrapper,
+.date-field .input[type='date']::-webkit-datetime-edit-text,
+.date-field .input[type='date']::-webkit-datetime-edit-day-field,
+.date-field .input[type='date']::-webkit-datetime-edit-month-field,
+.date-field .input[type='date']::-webkit-datetime-edit-year-field {
+  color: transparent;
+}
+
+.date-field__display {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
   font-size: 1rem;
+  color: var(--text-0);
+  pointer-events: none;
 }
 
 .input::placeholder {
@@ -507,6 +529,7 @@ input.input[type='date']::-webkit-date-and-time-value {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
+  min-width: 180px;
 }
 
 .avatar {

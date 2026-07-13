@@ -46,6 +46,27 @@
     container.querySelector('[data-page-action="next"]').addEventListener('click', () => onChange(page + 1));
   }
 
+  // --- Display propio para input[type=date] (ver .date-field en components.css) ---
+  function bindDateDisplay(inputId, displayId) {
+    const input = document.getElementById(inputId);
+    const display = document.getElementById(displayId);
+    if (!input || !display) return () => {};
+
+    function render() {
+      if (!input.value) {
+        display.textContent = '';
+        return;
+      }
+      const [y, m, d] = input.value.split('-');
+      display.textContent = `${d}/${m}/${y}`;
+    }
+
+    input.addEventListener('input', render);
+    input.addEventListener('change', render);
+    render();
+    return render;
+  }
+
   function openModal(overlay) {
     overlay.classList.add('is-open');
   }
@@ -84,5 +105,5 @@
     }
   }
 
-  window.UI = { showToast, openModal, closeModal, initHeader, paginate, renderPagination };
+  window.UI = { showToast, openModal, closeModal, initHeader, paginate, renderPagination, bindDateDisplay };
 })();

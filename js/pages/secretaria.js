@@ -43,6 +43,7 @@
   const altaDni = document.getElementById('altaDni');
   const altaDniError = document.getElementById('altaDniError');
   document.getElementById('altaFecha').value = U.todayISO();
+  const renderAltaFecha = window.UI.bindDateDisplay('altaFecha', 'altaFechaDisplay');
 
   altaDni.addEventListener('input', () => {
     altaDni.value = altaDni.value.replace(/\D/g, '').slice(0, 8);
@@ -77,6 +78,7 @@
     window.UI.showToast(`Cliente ${cliente.nombre} ${cliente.apellido} registrado correctamente.`, 'ok');
     altaForm.reset();
     document.getElementById('altaFecha').value = U.todayISO();
+    renderAltaFecha();
     populatePagoSelect();
   });
 
@@ -290,6 +292,7 @@
   const pagoClienteSelect = document.getElementById('pagoCliente');
   const pagoClienteInfo = document.getElementById('pagoClienteInfo');
   document.getElementById('pagoFecha').value = U.todayISO();
+  const renderPagoFecha = window.UI.bindDateDisplay('pagoFecha', 'pagoFechaDisplay');
 
   function populatePagoSelect() {
     const seleccionado = pagoClienteSelect.value;
@@ -355,6 +358,7 @@
     window.UI.showToast(`Pago registrado para el período ${periodoTxt}. Email enviado a ${cliente.email}.${aviso}`, 'ok');
     pagoForm.reset();
     document.getElementById('pagoFecha').value = U.todayISO();
+    renderPagoFecha();
     pagoClienteInfo.style.display = 'none';
     renderClientesTable();
     pagosPage = 1;
@@ -370,6 +374,7 @@
   const INGRESOS_PAGE_SIZE = 10;
   let ingresosPage = 1;
   ingresosFecha.value = U.todayISO();
+  window.UI.bindDateDisplay('ingresosFecha', 'ingresosFechaDisplay');
 
   // Total de "ingresaron hoy": siempre referido al día real, independiente de qué fecha
   // esté eligiendo el filtro de la tabla de abajo.
