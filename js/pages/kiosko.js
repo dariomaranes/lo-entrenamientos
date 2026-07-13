@@ -46,6 +46,12 @@
     closeModal();
   });
 
+  // En touch (tablet/celular) no hay tecla física que presionar, así que el mismo cierre
+  // también se puede disparar tocando el botón "Continuar" del propio modal.
+  resultModal.addEventListener('click', (e) => {
+    if (e.target.closest('.kiosko-result__continue')) closeModal();
+  });
+
   numpadClear.addEventListener('click', () => {
     dniInput.value = '';
     dniInput.focus();
@@ -113,6 +119,14 @@
     return plan === 'premium' ? 'Plan Premium' : 'Plan Base';
   }
 
+  // Botón táctil para cerrar (tablets/celulares sin teclado físico, donde el teclado
+  // virtual ya se ocultó al enviar el DNI) + recordatorio de la alternativa por teclado
+  // para el mostrador con numpad físico.
+  const CONTINUE_BUTTON = `
+    <button type="button" class="btn btn-primary kiosko-result__continue">Continuar</button>
+    <div class="kiosko-result__keyhint">En una PC o numpad también podés presionar cualquier tecla</div>
+  `;
+
   function renderExito({ cliente, ev }) {
     resultModal.innerHTML = `
       <img class="avatar-lg" src="${cliente.fotoUrl}" alt="Foto de ${U.escapeHtml(cliente.nombre)}" />
@@ -129,7 +143,8 @@
           <div class="kiosko-result__dias-label">Disponibles</div>
         </div>
       </div>
-      <div class="kiosko-result__hint">Ingreso registrado — ¡Buen entreno!<br />Presioná una tecla para continuar</div>
+      <div class="kiosko-result__hint">Ingreso registrado — ¡Buen entreno!</div>
+      ${CONTINUE_BUTTON}
     `;
   }
 
@@ -140,7 +155,7 @@
       <div class="kiosko-result__nombre">${U.escapeHtml(cliente.nombre)} ${U.escapeHtml(cliente.apellido)}</div>
       <div class="kiosko-result__plan">${planLabel(cliente.plan)}</div>
       <div class="kiosko-result__detalle">Tu cuota venció el ${U.formatDateShortEs(ev.periodo.fin)}. Acercate a secretaría para renovarla.</div>
-      <div class="kiosko-result__hint">Presioná una tecla para continuar</div>
+      ${CONTINUE_BUTTON}
     `;
   }
 
@@ -152,7 +167,7 @@
       <div class="kiosko-result__nombre">${U.escapeHtml(cliente.nombre)} ${U.escapeHtml(cliente.apellido)}</div>
       <div class="kiosko-result__plan">${planLabel(cliente.plan)}</div>
       <div class="kiosko-result__detalle">Ya usaste tus ${ev.cap} días de este período. Podés volver a partir del ${U.formatDateShortEs(proximaFecha)}.</div>
-      <div class="kiosko-result__hint">Presioná una tecla para continuar</div>
+      ${CONTINUE_BUTTON}
     `;
   }
 
@@ -160,7 +175,7 @@
     resultModal.innerHTML = `
       <div class="kiosko-result__estado">No encontrado</div>
       <div class="kiosko-result__detalle">${U.escapeHtml(mensaje)}</div>
-      <div class="kiosko-result__hint">Presioná una tecla para continuar</div>
+      ${CONTINUE_BUTTON}
     `;
   }
 
