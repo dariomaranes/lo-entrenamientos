@@ -14,8 +14,6 @@
   const resultModal = document.getElementById('resultModal');
   const staffLink = document.querySelector('.kiosko-staff-link');
 
-  let dismissTimer = null;
-
   // --- Vuelta al panel de origen (si se llegó acá con un botón "Ingreso de cliente") ---
   const returnTo = new URLSearchParams(window.location.search).get('return');
   if (returnTo === 'secretaria' || returnTo === 'admin') {
@@ -34,12 +32,18 @@
   dniInput.addEventListener('blur', () => setTimeout(refocus, 150));
 
   document.addEventListener('click', (e) => {
-    if (resultOverlay.classList.contains('is-open')) {
-      closeModal();
-      return;
-    }
+    if (resultOverlay.classList.contains('is-open')) return;
     if (numpad.contains(e.target) || e.target.closest('.kiosko-staff-link')) return;
     refocus();
+  });
+
+  // El resultado (éxito o error) queda fijo en pantalla — no se cierra solo ni con un toque,
+  // así el staff que pasa cerca llega a leer qué pasó. Se cierra con cualquier tecla, para no
+  // depender de que alguien lo toque a propósito.
+  document.addEventListener('keydown', (e) => {
+    if (!resultOverlay.classList.contains('is-open')) return;
+    e.preventDefault();
+    closeModal();
   });
 
   numpadClear.addEventListener('click', () => {
@@ -125,7 +129,7 @@
           <div class="kiosko-result__dias-label">Disponibles</div>
         </div>
       </div>
-      <div class="kiosko-result__hint">Ingreso registrado — ¡Buen entreno!</div>
+      <div class="kiosko-result__hint">Ingreso registrado — ¡Buen entreno!<br />Presioná una tecla para continuar</div>
     `;
   }
 
@@ -136,7 +140,7 @@
       <div class="kiosko-result__nombre">${U.escapeHtml(cliente.nombre)} ${U.escapeHtml(cliente.apellido)}</div>
       <div class="kiosko-result__plan">${planLabel(cliente.plan)}</div>
       <div class="kiosko-result__detalle">Tu cuota venció el ${U.formatDateShortEs(ev.periodo.fin)}. Acercate a secretaría para renovarla.</div>
-      <div class="kiosko-result__hint">Tocá la pantalla para continuar</div>
+      <div class="kiosko-result__hint">Presioná una tecla para continuar</div>
     `;
   }
 
@@ -148,7 +152,7 @@
       <div class="kiosko-result__nombre">${U.escapeHtml(cliente.nombre)} ${U.escapeHtml(cliente.apellido)}</div>
       <div class="kiosko-result__plan">${planLabel(cliente.plan)}</div>
       <div class="kiosko-result__detalle">Ya usaste tus ${ev.cap} días de este período. Podés volver a partir del ${U.formatDateShortEs(proximaFecha)}.</div>
-      <div class="kiosko-result__hint">Tocá la pantalla para continuar</div>
+      <div class="kiosko-result__hint">Presioná una tecla para continuar</div>
     `;
   }
 
@@ -156,12 +160,11 @@
     resultModal.innerHTML = `
       <div class="kiosko-result__estado">No encontrado</div>
       <div class="kiosko-result__detalle">${U.escapeHtml(mensaje)}</div>
-      <div class="kiosko-result__hint">Tocá la pantalla para continuar</div>
+      <div class="kiosko-result__hint">Presioná una tecla para continuar</div>
     `;
   }
 
   function showResult(estado, payload) {
-    clearTimeout(dismissTimer);
     resultModal.className = `modal kiosko-result kiosko-result--${estado}`;
     if (estado === 'exito') renderExito(payload);
     else if (estado === 'vencido') renderVencido(payload);
@@ -169,12 +172,10 @@
     else renderNoEncontrado(payload);
 
     resultOverlay.classList.add('is-open');
-    dismissTimer = setTimeout(closeModal, 4500);
   }
 
   function closeModal() {
     resultOverlay.classList.remove('is-open');
-    clearTimeout(dismissTimer);
     setTimeout(refocus, 50);
   }
 })();
