@@ -9,6 +9,7 @@
 html {
   color-scheme: dark;
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -18,6 +19,7 @@ body {
   font-size: 16px;
   line-height: 1.5;
   min-height: 100vh;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 

@@ -8,6 +8,12 @@
   }
 }
 
+@media (max-width: 480px) {
+  .kpi-grid--dashboard {
+    grid-template-columns: 1fr;
+  }
+}
+
 .admin-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -72,6 +78,7 @@
 
 .notif-content-cell {
   max-width: 380px;
+  min-width: 220px;
   color: var(--text-1);
 }
 

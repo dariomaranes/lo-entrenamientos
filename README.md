@@ -71,6 +71,8 @@ Para volver a un estado limpio entre demos, usá el botón **"Reiniciar datos de
 
 Paleta y tipografía (Barlow Condensed + Barlow, dark mode) elegidas con el skill `ui-ux-pro-max` (copiado a `.claude/skills/` en este repo) en base al logo del cliente y al rubro (gimnasio / fitness). Tokens de diseño centralizados en `css/tokens.css`.
 
+Todas las pantallas (kiosko, login, Secretaría, Admin) son responsive de verdad en celular: el header de los paneles de gestión se acomoda en varias filas en vez de cortar botones, las tablas largas scrollean horizontalmente contenidas (sin arrastrar el resto de la página), y el grid de KPIs del dashboard baja a 1-2 columnas según el ancho.
+
 ## Fuera de alcance (v1)
 
 Todo lo referido a rutinas de entrenamiento para clientes queda explícitamente fuera de esta primera versión.
